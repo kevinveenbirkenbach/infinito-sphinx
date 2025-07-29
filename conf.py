@@ -12,7 +12,7 @@ logging.basicConfig(level=logging_level)
 import os
 sys.path.insert(0, os.path.abspath('.'))
 
-project = 'CyMaIS - Cyber Master Infrastructure Solution'
+project = 'Infinito.Nexus - Cyber Master Infrastructure Solution'
 copyright = '2025, Kevin Veen-Birkenbach'
 author = 'Kevin Veen-Birkenbach'
 
@@ -42,13 +42,13 @@ html_sidebars = {
     ]
 }
 
-cymais_logo = "assets/img/logo.png"
+infinito_logo = "assets/img/logo.png"
 html_favicon = "assets/img/favicon.ico"
 
 html_theme_options = {
     "show_prev_next": False,
-    "logo_light": cymais_logo,
-    "logo_dark": cymais_logo,
+    "logo_light": infinito_logo,
+    "logo_dark": infinito_logo,
 }
 
 source_suffix = {

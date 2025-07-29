@@ -29,7 +29,7 @@ copy-images:
 
 # Installation routine for the package manager (do not run inside container)
 install: clean
-	cp -vr --no-dereference $(shell pkgmgr path cymais)/* ./source/
+	cp -vr --no-dereference $(shell pkgmgr path infinito)/* ./source/
 
 # Generate reStructuredText files from Python modules with sphinx-apidoc
 generate-apidoc:

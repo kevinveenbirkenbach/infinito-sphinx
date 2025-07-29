@@ -22,7 +22,7 @@ def create_readme_in_subdirs(generated_dir):
             readme_content = f"""\
 # Auto Generated Technical Documentation: {folder_base_name}
 
-This folder contains an auto-generated technical role documentation for CyMaIS.
+This folder contains an auto-generated technical role documentation for Infinito.Nexus.
 """
 
             with open(readme_path, "w", encoding="utf-8") as f:
