@@ -63,7 +63,7 @@ generate: generate-apidoc generate-yaml-index generate-ansible-roles generate-re
 # Remove generated files
 clean:
 	@echo "Removing generated files..."
-	- rm -rv ./source/
+	- find ./source -mindepth 1 ! -name '.gitkeep' -exec rm -rf {} +
 
 # Show help for all Makefile targets
 help:
