@@ -30,11 +30,16 @@ def generate_ansible_roles_index(roles_dir, output_file, caption: str):
 
     print(f"Index generated at {output_file}")
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate an index for documentation.")
     parser.add_argument("--roles-dir", required=True, help="Directory containing .rst files.")
     parser.add_argument("--output-file", required=True, help="Path to the output index.rst file.")
     parser.add_argument("--caption", required=True, help="The index title")
+    args = parser.parse_args(argv)
 
-    args = parser.parse_args()
     generate_ansible_roles_index(args.roles_dir, args.output_file, args.caption)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

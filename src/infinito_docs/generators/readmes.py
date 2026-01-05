@@ -29,9 +29,14 @@ This folder contains an auto-generated technical role documentation for Infinito
                 f.write(readme_content)
             print(f"README.md created at {readme_path}")
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Create README.md files in all subdirectories of the given directory.")
     parser.add_argument("--generated-dir", required=True, help="Path to the generated directory.")
+    args = parser.parse_args(argv)
 
-    args = parser.parse_args()
     create_readme_in_subdirs(args.generated_dir)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

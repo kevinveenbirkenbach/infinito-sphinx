@@ -1,42 +1,38 @@
-FROM python:3.9-slim
+ARG INFINITO_IMAGE_REPO=ghcr.io/kevinveenbirkenbach/infinito
+ARG INFINITO_IMAGE_TAG=latest
 
-# The following is necessary because make can not copy files outside their directory
-ARG SPHINX_HOST_SOURCE_DIR_RELATIVE=./source/
-ARG SPHINX_HOST_EXEC_DIR_RELATIVE=./
+FROM ${INFINITO_IMAGE_REPO}:${INFINITO_IMAGE_TAG} AS full
 
-# Defaults
-ARG SPHINX_SOURCE_DIR=/source/
+# Hadolint-like: ensure non-interactive package installs
+SHELL ["/bin/bash", "-o", "pipefail", "-lc"]
+
+# Defaults for docs build
 ARG SPHINX_OUTPUT_DIR=/output/
 ARG SPHINX_EXEC_DIR=/sphinx/
 
-# Set the environment variables so they are available during build for Makefile
-ENV SPHINX_SOURCE_DIR=${SPHINX_SOURCE_DIR}
-ENV SPHINX_OUTPUT_DIR=${SPHINX_OUTPUT_DIR}
-ENV SPHINX_REQUIREMENTS_DIR=${SPHINX_EXEC_DIR}/requirements
+# The infinito repo path used by your ecosystem
+ARG INFINITO_SRC_DIR=/opt/src/infinito
 
-# Set the working directory
+ENV SPHINX_OUTPUT_DIR=${SPHINX_OUTPUT_DIR}
+ENV SPHINX_EXEC_DIR=${SPHINX_EXEC_DIR}
+ENV INFINITO_SRC_DIR=${INFINITO_SRC_DIR}
+
 WORKDIR ${SPHINX_EXEC_DIR}
 
-# Update and install make
-RUN apt-get update && apt install -y make
+# Install pandoc (required by infinito_docs.generators.ansible_roles)
+# Arch needs sync; also avoid interactive prompts.
+RUN pacman -Sy --noconfirm --needed pandoc \
+ && pacman -Scc --noconfirm
 
-# Copy the project files into the container
-COPY ${SPHINX_HOST_EXEC_DIR_RELATIVE} ${SPHINX_EXEC_DIR}
+# Copy the infinito-sphinx (docs tooling) repo into /sphinx
+COPY . ${SPHINX_EXEC_DIR}
 
-# Copy the source files into the container
-COPY ${SPHINX_HOST_SOURCE_DIR_RELATIVE} ${SPHINX_SOURCE_DIR}
+# Install this repo as a Python package to provide infinito-docs-* CLIs
+RUN python -m pip install --no-cache-dir .
 
-# Install required packages
-RUN xargs -a ${SPHINX_REQUIREMENTS_DIR}/apt.txt apt install -y
+# Build HTML docs using the Makefile (which points Sphinx at $INFINITO_SRC_DIR)
+RUN make html
 
-# Install Python packages via requirements.txt
-RUN pip install --upgrade pip && pip install -r ${SPHINX_REQUIREMENTS_DIR}/pip.txt
-
-# Build the HTML documentation using Sphinx with the defined directories
-RUN cd ${SPHINX_EXEC_DIR} && make html
-
-# Expose port 8000 where the HTTP server will run
 EXPOSE 8000
 
-# Start a simple HTTP server to serve the built documentation
 CMD python -m http.server 8000 --directory "${SPHINX_OUTPUT_DIR}html/"

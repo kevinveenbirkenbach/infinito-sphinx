@@ -36,9 +36,3 @@ This command provides an easy way to access all the options needed to work with 
 ## Contributing
 
 Contributions are welcome! If you have any suggestions or encounter issues, feel free to open an issue or submit a pull request on [GitHub](https://github.com/kevinveenbirkenbach/infinito-nexus-sphinx).
-
----
-
-## License
-
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) ⚖️🔓.

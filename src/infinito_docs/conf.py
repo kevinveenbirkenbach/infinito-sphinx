@@ -9,8 +9,14 @@ else:
 
 logging.basicConfig(level=logging_level)
 
-import os
-sys.path.insert(0, os.path.abspath('.'))
+from pathlib import Path
+CONF_DIR = Path(__file__).resolve().parent
+
+templates_path = [str(CONF_DIR / "templates")]
+html_static_path = [str(CONF_DIR / "assets")]
+
+sys.path.insert(0, str(CONF_DIR))
+sys.path.insert(0, str(CONF_DIR / "extensions"))
 
 project = 'Infinito.Nexus - Cyber Master Infrastructure Solution'
 copyright = '2025, Kevin Veen-Birkenbach'
@@ -24,7 +30,6 @@ lexers['jinja'] = DjangoLexer()
 lexers['j2'] = DjangoLexer()
 
 # -- General configuration ---------------------------------------------------
-templates_path = ['templates']
 exclude_patterns = [
     'docs/build', 
     'venv', 
@@ -33,7 +38,6 @@ exclude_patterns = [
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'sphinxawesome_theme'
-html_static_path = ['assets']
 
 html_sidebars = {
     '**': [
@@ -58,17 +62,14 @@ source_suffix = {
     '.yaml': 'restructuredtext',
 }
 
-sys.path.insert(0, os.path.abspath('./extensions'))
-
 extensions = [
-    #'sphinx.ext.autosummary',
-    'myst_parser',
-    'extensions.local_file_headings',
-    'extensions.local_subfolders',
-    'extensions.roles_overview',
-    'extensions.markdown_include',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
+    "myst_parser",
+    "infinito_docs.extensions.local_file_headings",
+    "infinito_docs.extensions.local_subfolders",
+    "infinito_docs.extensions.roles_overview",
+    "infinito_docs.extensions.markdown_include",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
 ]
 
 autosummary_generate = True

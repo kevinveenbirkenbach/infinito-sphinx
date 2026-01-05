@@ -57,11 +57,15 @@ def generate_ansible_roles_doc(roles_dir, output_dir):
 
     print(f"Ansible roles documentation has been generated in {output_dir}")
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate documentation for Ansible roles.")
     parser.add_argument("--roles-dir", required=True, help="Directory containing Ansible roles.")
     parser.add_argument("--output-dir", required=True, help="Directory where documentation will be saved.")
+    args = parser.parse_args(argv)
 
-    args = parser.parse_args()
     generate_ansible_roles_doc(args.roles_dir, args.output_dir)
+    return 0
 
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -42,10 +42,15 @@ def generate_yaml_index(source_dir, output_file):
 
     print(f"YAML index has been generated at {output_file}")
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Generate an index for YAML files while respecting .gitignore.")
     parser.add_argument("--source-dir", required=True, help="Directory containing YAML files.")
     parser.add_argument("--output-file", required=True, help="Path to the output .rst file.")
+    args = parser.parse_args(argv)
 
-    args = parser.parse_args()
     generate_yaml_index(args.source_dir, args.output_file)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

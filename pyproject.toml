@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "infinito-sphinx"
+version = "0.1.0"
+description = "Infinito.Nexus documentation generator based on Sphinx."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Kevin Veen-Birkenbach" }
+]
+
+dependencies = [
+  "myst-parser",
+  "sphinx",
+  "sphinxawesome-theme",
+  "docutils",
+  "sphinx-jinja",
+  "sphinxcontrib-yaml",
+  "pathspec",
+  "markdown2",
+  "pyyaml",
+]
+
+# ---------------------------------------------------------------------------
+# CLI entry points
+# ---------------------------------------------------------------------------
+[project.scripts]
+# Main Makefile proxy / user-facing CLI
+infinito-docs = "infinito_docs.__main__:main"
+
+# Generator CLIs
+infinito-docs-generate-yaml-index = "infinito_docs.generators.yaml_index:main"
+infinito-docs-generate-readmes = "infinito_docs.generators.readmes:main"
+infinito-docs-generate-ansible-roles = "infinito_docs.generators.ansible_roles:main"
+infinito-docs-generate-roles-index = "infinito_docs.generators.index:main"
+
+# ---------------------------------------------------------------------------
+# setuptools configuration
+# ---------------------------------------------------------------------------
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ---------------------------------------------------------------------------
+# Package data (templates, static assets, etc.)
+# ---------------------------------------------------------------------------
+[tool.setuptools.package-data]
+"infinito_docs" = [
+  "templates/*.html",
+  "assets/**/*",
+]
+
+# ---------------------------------------------------------------------------
+# Optional dependency groups (purely optional, no license implication)
+# ---------------------------------------------------------------------------
+[project.optional-dependencies]
+dev = [
+  "ruff",
+  "pytest",
+]
