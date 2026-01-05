@@ -1,9 +1,10 @@
 services:
-  application:
-    build: 
-      context:    .
+  infinito_docs:
+    container_name: ${DOCS_CONTAINER_NAME:-infinito_docs}
+    build:
+      context: .
       dockerfile: Dockerfile
-      network:    "host"
+      network: "host"
     ports:
       - "127.0.0.1:80:8000"
     healthcheck:

@@ -1,3 +1,10 @@
+# Docker Compose service + container naming
+# Service name must match docker-compose.yml
+DOCS_SERVICE_NAME ?= infinito_docs
+
+# Optional explicit container_name (used by compose via env var if you set it)
+DOCS_CONTAINER_NAME ?= infinito_docs
+
 # PARAMETER (with default values)
 
 # Directory which contains the Makefile
@@ -26,7 +33,21 @@ SPHINX_ASSETS_DIR        = $(SPHINX_CONF_DIR)/assets
 ASSETS_SRC               = $(INFINITO_SRC_DIR)/assets/img/
 ASSETS_DST               = $(SPHINX_ASSETS_DIR)/img/
 
-.PHONY: help copy-images generate-apidoc generate-yaml-index generate-ansible-roles generate-roles-index generate-readmes generate html just-html up
+.PHONY: \
+	help \
+	copy-images \
+	generate-apidoc \
+	generate-yaml-index \
+	generate-ansible-roles \
+	generate-roles-index \
+	generate-readmes \
+	generate \
+	clean \
+	html \
+	just-html \
+	up \
+	test test-unit \
+	build-no-cache
 
 # Copy images into the documented source tree so that Sphinx can resolve them.
 copy-images:
@@ -83,11 +104,27 @@ html: copy-images generate
 just-html:
 	- sphinx-build -M html "$(INFINITO_SRC_DIR)" "$(SPHINX_OUTPUT_DIR)" $(SPHINXOPTS)
 
-# Start (or restart) the Docker container with a fresh build
-# (keeps compatibility if you have a docker-compose.yml doing the right mounts)
+# Start (or restart) the Docker container.
+# This will only build if the image is missing/outdated (default compose behavior).
 up:
-	- docker compose up -d --force-recreate --build
+	- DOCS_CONTAINER_NAME="$(DOCS_CONTAINER_NAME)" docker compose up -d --force-recreate --build "$(DOCS_SERVICE_NAME)"
 
-# Catch-all: forward any unspecified targets to Sphinx
-%: Makefile
-	- sphinx-build -M $@ "$(INFINITO_SRC_DIR)" "$(SPHINX_OUTPUT_DIR)" $(SPHINXOPTS) $(O)
+# Explicit: rebuild image with no-cache (does NOT automatically run)
+build-no-cache:
+	- DOCS_CONTAINER_NAME="$(DOCS_CONTAINER_NAME)" docker compose build --no-cache "$(DOCS_SERVICE_NAME)"
+
+# Unit tests inside container.
+# Uses "up" so it only builds when needed.
+test test-unit: up
+	@echo "Running unit tests inside container (infinito-sphinx repo)..."
+	docker compose exec -T "$(DOCS_SERVICE_NAME)" \
+		bash -lc ' \
+			cd "$${SPHINX_EXEC_DIR}" && \
+			PYTHONPATH=src \
+			python -m unittest discover \
+				-s tests/unit \
+				-t . \
+				-p "test_*.py" \
+				-v \
+		'
+
