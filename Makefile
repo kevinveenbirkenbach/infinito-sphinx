@@ -59,7 +59,7 @@ generate: generate-apidoc generate-yaml-index generate-ansible-roles generate-re
 # Remove generated files
 clean:
 	@echo "Removing generated files..."
-	- git clean -fdX
+	- rm -rv ./source/
 
 # Show help for all Makefile targets
 help:
