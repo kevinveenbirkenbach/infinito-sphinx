@@ -1,8 +1,9 @@
 services:
   application:
     build: 
-      context:  .
+      context:    .
       dockerfile: Dockerfile
+      network:    "host"
     ports:
       - "127.0.0.1:80:8000"
     healthcheck:
