@@ -29,7 +29,11 @@ copy-images:
 
 # Installation routine for the package manager (do not run inside container)
 install: clean
-	cp -vr --no-dereference $(shell pkgmgr path infinito)/* ./source/
+	@SRC="$$(pkgmgr path infinito)" || { \
+		echo "ERROR: pkgmgr path infinito failed" >&2; \
+		exit 1; \
+	}; \
+	cp -vr --no-dereference "$$SRC"/* ./source/
 
 # Generate reStructuredText files from Python modules with sphinx-apidoc
 generate-apidoc:
