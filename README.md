@@ -13,12 +13,56 @@ This documentation project is developed by [Kevin Veen-Birkenbach](https://www.v
 
 ---
 
-## Installation
+## Docker Image
 
-Install the Infinito.Nexus Sphinx Documentation tool easily using [Kevin's Package Manager](https://github.com/kevinveenbirkenbach/package-manager). Just run:
+The container image is published on **GitHub Container Registry (GHCR)**:
 
 ```bash
-pkgmgr install infinito-sphinx
+docker pull ghcr.io/kevinveenbirkenbach/infinito-sphinx:latest
+```
+
+What the image does:
+
+1. Uses the `infinito` base image
+2. Installs required build tools (e.g. `pandoc`)
+3. Runs `make setup` inside the Infinito source tree
+4. Builds the Sphinx HTML documentation
+5. Serves the generated docs via `http.server`
+
+---
+
+## Running the Documentation Server
+
+### Using `docker run`
+
+```bash
+docker run --rm -p 127.0.0.1:80:8000 \
+  ghcr.io/kevinveenbirkenbach/infinito-sphinx:latest
+```
+
+Then open:
+
+```
+http://127.0.0.1/
+```
+
+---
+
+### Using `docker-compose`
+
+```yaml
+services:
+  infinito_docs:
+    image: ghcr.io/kevinveenbirkenbach/infinito-sphinx:latest
+    container_name: infinito_docs
+    ports:
+      - "127.0.0.1:80:8000"
+```
+
+Start the service:
+
+```bash
+docker compose up -d
 ```
 
 ---
