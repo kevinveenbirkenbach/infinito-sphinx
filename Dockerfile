@@ -20,7 +20,6 @@ ENV INFINITO_SRC_DIR=${INFINITO_SRC_DIR}
 WORKDIR ${SPHINX_EXEC_DIR}
 
 # Install pandoc (required by infinito_docs.generators.ansible_roles)
-# Arch needs sync; also avoid interactive prompts.
 RUN pacman -Sy --noconfirm --needed pandoc \
  && pacman -Scc --noconfirm
 
@@ -30,8 +29,8 @@ COPY . ${SPHINX_EXEC_DIR}
 # Install this repo as a Python package to provide infinito-docs-* CLIs
 RUN python -m pip install --no-cache-dir .
 
-# Build HTML docs using the Makefile (which points Sphinx at $INFINITO_SRC_DIR)
-RUN make html
+# Explicit: run infinito setup first, then build HTML
+RUN make setup && make html
 
 EXPOSE 8000
 

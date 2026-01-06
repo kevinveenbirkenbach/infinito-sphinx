@@ -20,7 +20,7 @@ SPHINX_CONF_DIR         ?= $(SPHINX_EXEC_DIR)/src/infinito_docs
 SPHINXOPTS              ?= -c $(SPHINX_CONF_DIR)
 
 # Directory which will hold auto-generated files
-SPHINX_GENERATED_DIR    = $(SPHINX_OUTPUT_DIR)/../generated
+SPHINX_GENERATED_DIR    = $(INFINITO_SRC_DIR)/generated
 
 # Directory which contains extracted requirement files
 SPHINX_REQUIREMENTS_DIR = $(SPHINX_EXEC_DIR)/requirements
@@ -35,6 +35,7 @@ ASSETS_DST               = $(SPHINX_ASSETS_DIR)/img/
 
 .PHONY: \
 	help \
+	setup \
 	copy-images \
 	generate-apidoc \
 	generate-yaml-index \
@@ -48,6 +49,11 @@ ASSETS_DST               = $(SPHINX_ASSETS_DIR)/img/
 	up \
 	test test-unit \
 	build-no-cache
+
+# Run make setup in INFINITO_SRC_DIR (inside container / build environment)
+setup:
+	@echo "Running 'make setup' in $(INFINITO_SRC_DIR)..."
+	$(MAKE) -C "$(INFINITO_SRC_DIR)" setup
 
 # Copy images into the documented source tree so that Sphinx can resolve them.
 copy-images:
@@ -88,7 +94,7 @@ generate-readmes:
 	infinito-docs-generate-readmes \
 		--generated-dir "$(SPHINX_GENERATED_DIR)"
 
-# Run all generation steps
+# Run all generation steps (setup is explicit in Dockerfile; keep generate pure)
 generate: generate-apidoc generate-yaml-index generate-ansible-roles generate-roles-index generate-readmes
 
 # Show help for all Makefile targets
@@ -127,4 +133,3 @@ test test-unit: up
 				-p "test_*.py" \
 				-v \
 		'
-
